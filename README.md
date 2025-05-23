@@ -1,399 +1,285 @@
 # 🤖 RoboticaEthernetArduino
 
-**Control remoto de dispositivos robóticos mediante Arduino y interfaz web**
+- Aparicio Llanquipacha Gabriel
+- Arancibia Aguilar Daniel Andree
+- Moises Llanos
 
-Este proyecto implementa un sistema de control robótico completo que permite gestionar remotamente múltiples componentes electrónicos a través de una interfaz web moderna y intuitiva. Utilizando un Arduino equipado con Ethernet Shield, el sistema actúa como servidor HTTP proporcionando control en tiempo real de relés, LEDs, motores paso a paso y monitoreo de sensores ambientales.
+**Control remoto de LED, sensor DHT11 y motor paso a paso vía Arduino con Ethernet Shield**
 
-## 🌟 Características Principales
+Este proyecto implementa un sistema de control robótico que permite gestionar remotamente un LED, un relé para activar un foco conectado a la corriente eléctrica, un motor paso a paso y monitorear un sensor de temperatura y humedad DHT11 a través de una interfaz web. El sistema utiliza un Arduino con Ethernet Shield actuando como servidor HTTP.
 
-- **🌐 Control Web Remoto**: Interfaz web responsive para control desde cualquier dispositivo
-- **🔌 Conectividad Ethernet**: Comunicación estable y confiable mediante shield W5100
-- **🎛️ Control Múltiple**: Gestión simultánea de relés, LEDs y motores
-- **🌡️ Monitoreo Ambiental**: Lectura en tiempo real de temperatura y humedad
-- **⚙️ Motor Paso a Paso**: Control preciso de posicionamiento angular (0° a 360°)
-- **📊 Visualización**: Gráfico tipo reloj para mostrar la posición del motor
-- **🔄 Actualización Automática**: Datos de sensores actualizados cada segundo
+## 🌟 Características del Proyecto
+
+- **🌐 Control Web**: Interfaz HTML para control remoto
+- **🔌 Conectividad Ethernet**: Comunicación mediante shield W5100
+- **💡 Control de LED**: Encendido/apagado de LED integrado
+- **⚡ Control de Relé**: Activación de foco conectado a 110V/220V
+- **🌡️ Sensor DHT11**: Lectura de temperatura y humedad
+- **⚙️ Motor Paso a Paso**: Control de posición angular (0° a 360°)
 
 ## 📦 Estructura del Proyecto
 
 ```
 📁 RoboticaEthernetArduino/
-├── 📄 index.html          # Interfaz web principal
-├── 📄 arduino.ino         # Código fuente para Arduino
-├── 📄 README.md           # Documentación del proyecto
-├── 📁 assets/             # Recursos adicionales (opcional)
-│   ├── 🖼️ images/         # Imágenes del proyecto
-│   └── 🎨 styles/         # Estilos CSS adicionales
-└── 📁 docs/               # Documentación técnica detallada
-    ├── 📄 wiring.md       # Guía de conexiones
-    └── 📄 api.md          # Documentación de la API
+├── 📄 Examen.html                    # Interfaz web de control
+├── 📄 ethernetledrelaympap.ino       # Código fuente para Arduino
+└── 📄 README.md                      # Este archivo
 ```
 
 ## 🧰 Lista de Componentes
 
-### Componentes Principales
-
-| Componente | Cantidad | Especificaciones | Precio Aprox. |
-|------------|----------|------------------|---------------|
-| **Arduino UNO R3** | 1 | Microcontrolador ATmega328P | $15-25 USD |
-| **Ethernet Shield W5100** | 1 | Compatible con Arduino UNO | $10-20 USD |
-| **Módulo Relé 5V** | 1 | 1 canal, corriente máx. 10A | $3-5 USD |
-| **Motor Paso a Paso 28BYJ-48** | 1 | 5V, 64 pasos/revolución | $5-8 USD |
-| **Driver ULN2003** | 1 | Para control del motor | $2-3 USD |
-| **Sensor DHT11** | 1 | Temperatura y humedad | $3-5 USD |
-
-### Componentes Adicionales
-
 | Componente | Cantidad | Especificaciones |
 |------------|----------|------------------|
-| LED (cualquier color) | 1 | 5mm, 3.3V |
-| Resistencia 220Ω | 1 | Para limitación de corriente del LED |
-| Protoboard | 1 | 830 puntos de conexión |
-| Cables Dupont | 20+ | Macho-macho, macho-hembra |
-| Cable Ethernet | 1 | Para conexión de red |
-| Fuente de alimentación | 1 | 9V-12V, 1A (para Arduino) |
+| **Arduino UNO** | 1 | Microcontrolador ATmega328P |
+| **Ethernet Shield W5100** | 1 | Para conectividad de red |
+| **Módulo Relé 5V** | 1 | Para control del foco de 110V/220V |
+| **Motor Paso a Paso 28BYJ-48** | 1 | Con driver ULN2003 |
+| **Sensor DHT11** | 1 | Sensor de temperatura y humedad |
+| **LED** | 1 | LED indicador |
+| **Resistencia 220Ω** | 1 | Para el LED |
+| **Foco incandescente** | 1 | Conectado a través del relé |
+| **Fuente externa 5V** | 1 | Para alimentar el motor paso a paso |
+| **Protoboard y cables** | Varios | Para conexiones |
 
-## 🔌 Diagrama de Conexiones
+## 🔌 Conexiones del Circuito
 
-### Tabla de Conexiones Detallada
+### Tabla de Conexiones
 
-| Pin Arduino | Componente | Pin/Terminal | Descripción |
-|-------------|------------|--------------|-------------|
-| **Digital 2** | Driver ULN2003 | IN1 | Control motor - Bobina A |
-| **Digital 3** | Driver ULN2003 | IN2 | Control motor - Bobina B |
-| **Digital 4** | Driver ULN2003 | IN3 | Control motor - Bobina C |
-| **Digital 5** | Driver ULN2003 | IN4 | Control motor - Bobina D |
-| **Digital 6** | Módulo Relé | IN | Señal de control del relé |
-| **Digital 7** | Sensor DHT11 | DATA | Lectura de datos del sensor |
-| **Digital 13** | LED | Ánodo (+) | Control de LED (con resistencia) |
-| **5V** | Múltiples | VCC/+ | Alimentación positiva |
-| **GND** | Múltiples | GND/- | Tierra común |
+| Pin Arduino | Componente | Conexión | Descripción |
+|-------------|------------|----------|-------------|
+| **Digital 2** | Driver ULN2003 | IN1 | Control motor paso a paso |
+| **Digital 4** | Driver ULN2003 | IN2 | Control motor paso a paso |
+| **Digital 5** | Módulo Relé | IN | Control del relé para el foco |
+| **Digital 7** | Sensor DHT11 | DATA | Lectura de temperatura y humedad |
+| **Digital 8** | LED | Ánodo (+) | LED indicador (con resistencia 220Ω) |
+| **5V** | Varios | VCC | Alimentación para módulos |
+| **GND** | Varios | GND | Tierra común |
 
-### ⚠️ Notas Importantes de Conexión
+### Alimentación Externa
+- **Motor Paso a Paso**: Requiere fuente externa de 5V conectada al driver ULN2003
+- **Relé y Foco**: El relé controla directamente un foco conectado a un enchufe de 110V/220V
+- **Tierra Común**: Conectar GND de la fuente externa con GND del Arduino
 
-- **Alimentación Externa**: El motor paso a paso requiere alimentación externa de 5V para funcionamiento óptimo
-- **Tierra Común**: Conectar todas las tierras (GND) en un punto común
-- **Resistencia LED**: Usar resistencia de 220Ω en serie con el LED para evitar daños
-- **Ethernet Shield**: Asegurar conexión correcta con pines SPI (10, 11, 12, 13)
+## 🌐 Interfaz Web (Examen.html)
 
-## 🌐 Interfaz Web - Características
+La interfaz web proporciona los siguientes controles:
 
-### Diseño y Funcionalidad
+### Controles Disponibles
+1. **Control de Relé**: Botón para encender/apagar el foco
+2. **Control de LED**: Botón para encender/apagar el LED
+3. **Control Simultáneo**: Botón para activar relé y LED al mismo tiempo
+4. **Control de Motor**: Campo de entrada para especificar ángulo (0° a 360°)
+5. **Monitor de Sensor**: Visualización en tiempo real de temperatura y humedad
 
-La interfaz web ha sido desarrollada con tecnologías modernas para proporcionar una experiencia de usuario fluida:
-
-#### **Tecnologías Utilizadas**
-- **HTML5**: Estructura semántica y moderna
-- **CSS3**: Estilos responsivos con Flexbox/Grid
-- **JavaScript ES6+**: Lógica de control y comunicación asíncrona
-- **Fetch API**: Comunicación HTTP con el Arduino
-
-#### **Controles Disponibles**
-
-1. **🔴 Control de Relé**
-   - Botón toggle para activar/desactivar
-   - Indicador visual del estado actual
-   - Ideal para control de dispositivos de alta potencia
-
-2. **💡 Control de LED**
-   - Interruptor visual intuitivo
-   - Estado reflejado en tiempo real
-   - Perfecto para indicadores luminosos
-
-3. **⚡ Control Simultáneo**
-   - Activación conjunta de relé y LED
-   - Útil para rutinas de activación múltiple
-
-4. **🎯 Control de Motor Paso a Paso**
-   - Selector de ángulo (0° a 360°)
-   - Visualización gráfica tipo reloj
-   - Control preciso de posicionamiento
-
-5. **🌡️ Monitor Ambiental**
-   - Temperatura en tiempo real (°C)
-   - Humedad relativa (%)
-   - Actualización automática cada segundo
-
-## 🔗 API REST del Arduino
-
-El Arduino implementa un servidor HTTP que expone los siguientes endpoints:
-
-### Endpoints de Control
-
-#### **POST /rele**
-Alterna el estado del relé
-```http
-POST http://192.168.199.214/rele
+### Configuración de IP
+En el archivo `Examen.html`, modificar la IP del Arduino:
+```javascript
+const IP_ARDUINO = "http://192.168.199.214"; // Cambiar por la IP de tu Arduino
 ```
-**Respuesta:**
+
+## 🔗 API del Arduino (ethernetledrelaympap.ino)
+
+El Arduino actúa como servidor HTTP y responde a las siguientes rutas:
+
+### Endpoints Disponibles
+
+| Método | Ruta | Función |
+|--------|------|---------|
+| **POST** | `/interruptor1` | Alterna el estado del relé (foco) |
+| **POST** | `/interruptor2` | Alterna el estado del LED |
+| **POST** | `/interruptor3` | Activa simultáneamente relé y LED |
+| **GET** | `/sensor` | Devuelve datos de temperatura y humedad |
+| **GET** | `/mover/[grados]` | Mueve el motor al ángulo especificado |
+
+### Ejemplos de Respuesta
+
+**Sensor DHT11** (`GET /sensor`):
 ```json
 {
-  "status": "success",
-  "device": "rele",
-  "state": "ON"
+  "exito": true,
+  "temperatura": "25.3",
+  "humedad": "61.4"
 }
 ```
 
-#### **POST /led**
-Controla el estado del LED
-```http
-POST http://192.168.199.214/led
-```
+**Control de Motor** (`GET /mover/90`):
+Mueve el motor a la posición de 90 grados desde su posición actual.
 
-#### **POST /ambos**
-Activa simultáneamente relé y LED
-```http
-POST http://192.168.199.214/ambos
-```
+## ⚙️ Configuración e Instalación
 
-### Endpoints de Lectura
+### 1. Configuración del Arduino
 
-#### **GET /sensor**
-Obtiene datos del sensor DHT11
-```http
-GET http://192.168.199.214/sensor
-```
-**Respuesta:**
-```json
-{
-  "success": true,
-  "temperature": "24.5",
-  "humidity": "62.8",
-  "timestamp": "2024-05-23T10:30:00Z"
-}
-```
-
-#### **GET /motor/{angulo}**
-Posiciona el motor en el ángulo especificado
-```http
-GET http://192.168.199.214/motor/180
-```
-**Parámetros:**
-- `angulo`: Valor entre 0 y 360 grados
-
-## ⚙️ Guía de Instalación y Configuración
-
-### Paso 1: Preparación del Hardware
-
-1. **Ensamblaje del Circuito**
-   ```bash
-   # Verificar conexiones según tabla de pines
-   # Usar multímetro para verificar continuidad
-   # Probar alimentación antes de conectar Arduino
-   ```
-
-2. **Instalación del Ethernet Shield**
-   - Apilar cuidadosamente sobre el Arduino
-   - Verificar alineación correcta de pines
-   - Conectar cable Ethernet al router/switch
-
-### Paso 2: Configuración del Software
-
-1. **Preparación del IDE de Arduino**
-   ```bash
-   # Instalar librerías requeridas:
-   # - DHT sensor library
-   # - Ethernet library (incluida por defecto)
-   # - Stepper library (incluida por defecto)
-   ```
-
-2. **Configuración de Red**
+1. **Configurar la IP en el código**:
    ```cpp
-   // En el archivo arduino.ino, modificar:
-   IPAddress ip(192, 168, 1, 214);        // IP del Arduino
-   IPAddress gateway(192, 168, 1, 1);     // Gateway de tu red
-   IPAddress subnet(255, 255, 255, 0);    // Máscara de subred
+   IPAddress ip(192, 168, 199, 214); // Cambiar según tu red
    ```
 
-3. **Carga del Código**
-   ```bash
-   # 1. Abrir arduino.ino en el IDE
-   # 2. Seleccionar puerto y placa correctos
-   # 3. Compilar y subir el código
-   # 4. Verificar en monitor serie la inicialización
-   ```
+2. **Cargar el código**: Subir `ethernetledrelaympap.ino` al Arduino usando el IDE de Arduino
 
-### Paso 3: Configuración de la Interfaz Web
+3. **Verificar conexión**: El monitor serie debe mostrar la inicialización exitosa
 
-1. **Modificar IP en el HTML**
-   ```javascript
-   // En index.html, actualizar:
-   const ARDUINO_IP = "http://192.168.1.214";
-   ```
+### 2. Configuración de la Interfaz Web
 
-2. **Servir el Archivo HTML**
-   ```bash
-   # Opción 1: Abrir directamente en navegador
-   # Opción 2: Usar servidor local
-   python -m http.server 8000
-   # Luego visitar: http://localhost:8000
-   ```
+1. **Abrir `Examen.html`** en un navegador web
+2. **Verificar conectividad**: Los botones deben responder y mostrar el estado de los componentes
+3. **Monitoreo automático**: Los datos del sensor se actualizan cada segundo
 
-## 📊 Especificaciones Técnicas
+## 🎛️ Funcionamiento del Sistema
+
+### Control de Relé (Foco)
+- El relé se conecta directamente a un enchufe de corriente
+- Al activarse, enciende el foco conectado
+- Controlado desde la interfaz web mediante botón
+
+### Control del LED
+- LED conectado al pin 13 con resistencia limitadora
+- Funciona como indicador visual del sistema
+- Control independiente desde la interfaz web
+
+## 🔄 Funcionamiento Paso a Paso del Sistema
+
+### 1. Inicialización del Sistema
+
+**Arranque del Arduino:**
+1. **Configuración de red**: Arduino configura su IP estática (192.168.199.214) y se conecta a la red Ethernet
+2. **Inicialización de pines**: Se configuran los pines digitales como entrada (sensor) o salida (relé, LED, motor)
+3. **Configuración del servidor HTTP**: Arduino inicia el servidor web en el puerto 80
+4. **Estado inicial**: Todos los componentes se encuentran en estado OFF/desactivado
+5. **Verificación**: El monitor serie muestra "Servidor iniciado" confirmando la inicialización exitosa
+
+**Preparación del sensor DHT11:**
+1. El sensor se inicializa y realiza su primera lectura de calibración
+2. Se establece el intervalo de lectura (cada 2 segundos mínimo por limitaciones del sensor)
+
+### 2. Proceso de Control desde la Interfaz Web
+
+**Carga de la página web (Examen.html):**
+1. **Conexión inicial**: El navegador carga la página HTML y establece conexión con la IP del Arduino
+2. **Verificación de conectividad**: JavaScript intenta conectarse al Arduino mediante fetch API
+3. **Inicialización de elementos**: Se configuran los botones, campos de entrada y áreas de visualización
+4. **Inicio de monitoreo**: Se inicia el timer para actualización automática del sensor cada segundo
+
+**Flujo de control de componentes:**
+
+#### Control del Relé (Foco):
+1. **Usuario presiona botón**: Click en "Controlar Relé" en la interfaz web
+2. **Envío de petición**: JavaScript envía POST request a `/interruptor1`
+3. **Recepción en Arduino**: Arduino recibe la petición HTTP en el puerto 80
+4. **Procesamiento**: El código analiza la URL y identifica el comando para el relé
+5. **Cambio de estado**: Arduino alterna el estado del pin 5 (HIGH/LOW)
+6. **Activación física**: El relé conmuta sus contactos, activando/desactivando el circuito del foco
+7. **Respuesta HTTP**: Arduino envía confirmación de estado al navegador
+8. **Actualización visual**: La interfaz web actualiza el estado del botón
+
+#### Control del LED:
+1. **Acción del usuario**: Click en "Controlar LED"
+2. **Petición HTTP**: POST a `/interruptor2`
+3. **Procesamiento interno**: Arduino recibe y procesa la petición
+4. **Control de pin**: Cambio de estado del pin 13 (digitalWrite HIGH/LOW)
+5. **Efecto físico**: LED se enciende/apaga según el nuevo estado
+6. **Confirmación**: Arduino responde con el estado actual del LED
+
+#### Control Simultáneo:
+1. **Activación múltiple**: Usuario presiona "Activar Ambos"
+2. **Procesamiento conjunto**: POST a `/interruptor3`
+3. **Secuencia de activación**:
+   - Primero se activa el relé (pin 5 = HIGH)
+   - Inmediatamente después se activa el LED (pin 13 = HIGH)
+4. **Respuesta unificada**: Arduino confirma la activación de ambos componentes
+
+### 3. Control del Motor Paso a Paso
+
+**Proceso detallado de movimiento:**
+1. **Entrada de usuario**: Usuario ingresa ángulo deseado (0-360°) y presiona "Mover Motor"
+2. **Validación**: JavaScript verifica que el valor esté en el rango válido
+3. **Envío de comando**: GET request a `/mover/[ángulo]` (ejemplo: `/mover/90`)
+4. **Recepción y parsing**: Arduino extrae el valor del ángulo de la URL
+5. **Cálculo de pasos**:
+   - Arduino conoce la posición actual del motor (variable global)
+   - Calcula la diferencia entre posición actual y deseada
+   - Determina la dirección de giro (horario/antihorario) para el menor recorrido
+   - Convierte grados a pasos: `pasos = (ángulo * 2048) / 360`
+6. **Secuencia de movimiento**:
+   - Arduino envía pulsos secuenciales a los pines 2, 3, 4, 5 del driver ULN2003
+   - Cada secuencia mueve el motor un paso (0.176°)
+   - El proceso se repite hasta alcanzar la posición deseada
+7. **Actualización de posición**: Arduino actualiza la variable de posición actual
+8. **Confirmación**: Se envía respuesta HTTP confirmando el movimiento completado
+
+**Secuencia de pasos del motor (patrón de activación):**
+```
+Paso 1: IN1=HIGH, IN2=LOW,  IN3=LOW,  IN4=LOW
+Paso 2: IN1=LOW,  IN2=HIGH, IN3=LOW,  IN4=LOW
+Paso 3: IN1=LOW,  IN2=LOW,  IN3=HIGH, IN4=LOW
+Paso 4: IN1=LOW,  IN2=LOW,  IN3=LOW,  IN4=HIGH
+```
+
+### 4. Monitoreo del Sensor DHT11
+
+**Ciclo continuo de lectura:**
+1. **Timer automático**: Cada segundo, JavaScript ejecuta función de actualización
+2. **Petición de datos**: GET request a `/sensor`
+3. **Lectura física del sensor**:
+   - Arduino activa el pin 7 para comunicarse con DHT11
+   - Envía señal de inicio al sensor
+   - DHT11 responde con 40 bits de datos (16 para humedad + 16 para temperatura + 8 checksum)
+   - Arduino decodifica los bits y calcula valores reales
+4. **Validación de datos**: Verificación de checksum para asegurar lectura correcta
+5. **Formateo de respuesta**: Arduino crea JSON con temperatura y humedad
+6. **Envío de datos**: Respuesta HTTP con los valores actuales
+7. **Actualización visual**: JavaScript actualiza los elementos HTML con los nuevos valores
+8. **Reinicio del ciclo**: Timer reinicia para la siguiente lectura en 1 segundo
+
+**Formato de comunicación con DHT11:**
+- **Señal de inicio**: 18ms LOW + 40μs HIGH
+- **Respuesta del sensor**: 40 bits de datos + timing específico
+- **Interpretación**: Los primeros 16 bits = humedad, siguientes 16 bits = temperatura
+
+### 5. Gestión de Errores y Estados
+
+**Manejo de fallos de comunicación:**
+1. **Timeout de red**: Si no hay respuesta en 5 segundos, JavaScript muestra error de conectividad
+2. **Datos corruptos del sensor**: Si checksum falla, Arduino mantiene última lectura válida
+3. **Límites del motor**: Si se solicita ángulo fuera de rango, Arduino ignora el comando
+4. **Sobrecarga de peticiones**: Arduino procesa peticiones secuencialmente para evitar conflictos
+
+**Estados del sistema:**
+- **IDLE**: Sistema esperando comandos
+- **PROCESSING**: Ejecutando comando recibido
+- **MOVING**: Motor en movimiento (no acepta nuevos comandos de motor)
+- **READING**: Leyendo sensor DHT11
+- **ERROR**: Estado de error temporal (se recupera automáticamente)
+
+### 6. Comunicación HTTP Détallada
+
+**Estructura de peticiones:**
 
 ### Motor Paso a Paso
-- **Modelo**: 28BYJ-48
-- **Voltaje**: 5V DC
-- **Pasos por revolución**: 2048 (con reductor interno)
-- **Ángulo por paso**: 0.176°
-- **Precisión**: ±3% 
-- **Torque**: 34 mN⋅m aproximadamente
+- Alimentado por fuente externa de 5V
+- Control de posición angular preciso
+- Rango de movimiento: 0° a 360°
+- El sistema calcula automáticamente el movimiento mínimo requerido
 
 ### Sensor DHT11
-- **Rango de temperatura**: 0°C a 50°C (±2°C precisión)
-- **Rango de humedad**: 20% a 90% RH (±5% precisión)
-- **Tiempo de respuesta**: 2 segundos
-- **Frecuencia de muestreo**: 1 Hz máximo
+- Mide temperatura y humedad ambiental
+- Actualización automática cada segundo
+- Datos mostrados en tiempo real en la interfaz web
 
-### Conectividad de Red
-- **Protocolo**: HTTP/1.1
-- **Puerto**: 80 (configurable)
-- **Velocidad**: 10/100 Mbps (dependiente del shield)
-- **Latencia típica**: <50ms en LAN
+## 🔧 Especificaciones Técnicas
 
-## 💡 Ejemplos de Uso Prácticos
+### Motor Paso a Paso 28BYJ-48
+- **Pasos por revolución**: 2048 (con reductor interno)
+- **Ángulo por paso**: 0.176°
+- **Alimentación**: 5V DC (fuente externa)
 
-### Caso 1: Sistema de Riego Automatizado
-```javascript
-// Activar bomba de agua mediante relé
-fetch(`${ARDUINO_IP}/rele`, { method: 'POST' })
-  .then(() => console.log('Riego activado'));
+### Sensor DHT11
+- **Rango temperatura**: 0°C a 50°C
+- **Rango humedad**: 20% a 90% RH
+- **Precisión**: ±2°C, ±5% RH
 
-// Monitorear humedad ambiental
-setInterval(async () => {
-  const data = await fetch(`${ARDUINO_IP}/sensor`).then(r => r.json());
-  if (data.humidity < 30) {
-    // Activar riego si humedad es baja
-    activarRiego();
-  }
-}, 60000); // Cada minuto
-```
+### Conectividad
+- **Protocolo**: HTTP sobre Ethernet
+- **Puerto**: 80
+- **IP por defecto**: 192.168.199.214
 
-### Caso 2: Seguidor Solar
-```javascript
-// Posicionar panel solar según hora del día
-function posicionarPanel() {
-  const hora = new Date().getHours();
-  const angulo = (hora - 6) * 15; // 15° por hora desde las 6 AM
-  
-  if (angulo >= 0 && angulo <= 180) {
-    fetch(`${ARDUINO_IP}/motor/${angulo}`);
-  }
-}
-```
-
-### Caso 3: Sistema de Monitoreo
-```javascript
-// Dashboard en tiempo real
-function actualizarDashboard() {
-  fetch(`${ARDUINO_IP}/sensor`)
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById('temp').textContent = data.temperature + '°C';
-      document.getElementById('hum').textContent = data.humidity + '%';
-      
-      // Alertas automáticas
-      if (parseFloat(data.temperature) > 30) {
-        activarVentilacion();
-      }
-    });
-}
-```
-
-## 🚀 Extensiones y Mejoras Futuras
-
-### Hardware
-- [ ] **Sensores adicionales**: Presión atmosférica, luz ambiente, pH
-- [ ] **Actuadores**: Servomotores, motores DC con encoders
-- [ ] **Comunicación inalámbrica**: Módulo WiFi ESP8266/ESP32
-- [ ] **Alimentación**: Panel solar con batería de respaldo
-
-### Software
-- [ ] **Base de datos**: Logging histórico de datos de sensores
-- [ ] **Notificaciones**: Email/SMS para alertas críticas
-- [ ] **API REST completa**: CRUD operations para configuraciones
-- [ ] **Interfaz móvil**: App nativa para Android/iOS
-- [ ] **Dashboard avanzado**: Gráficos históricos, análisis de tendencias
-
-## 🛠️ Solución de Problemas Comunes
-
-### Problema: Arduino no responde via Ethernet
-```bash
-# Verificaciones:
-1. Cable Ethernet conectado correctamente
-2. LED del shield Ethernet parpadeando
-3. IP configurada en rango de red local
-4. Ping al Arduino: ping 192.168.1.214
-5. Monitor serie mostrando inicialización exitosa
-```
-
-### Problema: Motor paso a paso no se mueve
-```bash
-# Posibles causas:
-1. Conexiones sueltas en driver ULN2003
-2. Alimentación insuficiente (usar fuente externa 5V)
-3. Secuencia de pasos incorrecta en código
-4. Motor defectuoso (probar con código de prueba)
-```
-
-### Problema: Lecturas incorrectas del DHT11
-```bash
-# Soluciones:
-1. Verificar conexión del pin DATA
-2. Agregar resistencia pull-up de 10kΩ
-3. Aumentar delay entre lecturas
-4. Verificar librería DHT instalada correctamente
-```
-
-## 🤝 Contribuciones
-
-¡Las contribuciones son bienvenidas! Por favor:
-
-1. **Fork** el repositorio
-2. **Crea** una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. **Commit** tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. **Push** a la rama (`git push origin feature/nueva-funcionalidad`)
-5. **Crea** un Pull Request
-
-### Áreas de Contribución
-- 🐛 **Bug fixes**: Corrección de errores
-- ✨ **Features**: Nuevas funcionalidades
-- 📚 **Documentación**: Mejoras en documentación
-- 🎨 **UI/UX**: Mejoras en interfaz de usuario
-- ⚡ **Performance**: Optimizaciones de rendimiento
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-```
-MIT License
-
-Copyright (c) 2024 RoboticaEthernetArduino
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software...
-```
-
-## 👨‍💻 Autor
-
-**Tu Nombre**
-- GitHub: [@tuusuario](https://github.com/tuusuario)
-- Email: tu.email@ejemplo.com
-- LinkedIn: [Tu Perfil](https://linkedin.com/in/tuperfil)
-
-## 🙏 Agradecimientos
-
-- Comunidad Arduino por las librerías y ejemplos
-- Contribuidores del proyecto Ethernet Shield
-- Desarrolladores de las librerías DHT y Stepper
-- Beta testers y colaboradores del proyecto
-
----
-
-⭐ **¡Si este proyecto te fue útil, no olvides darle una estrella!** ⭐
-
-📧 **¿Preguntas o sugerencias?** Abre un [issue](https://github.com/tuusuario/RoboticaEthernetArduino/issues) o envía un pull request.
+**Proyecto desarrollado para control robótico mediante Arduino y Ethernet Shield**
